@@ -80,5 +80,13 @@ class NewStringTest {
             assertEquals(s, s.trim());
             assertEquals("abc", s.strip());
         }
+
+        @Test
+        void testSideStrip() {
+            var s = "\t abc \n";
+
+            assertEquals("abc \n", s.stripLeading());
+            assertEquals("\t abc", s.stripTrailing());
+        }
     }
 }

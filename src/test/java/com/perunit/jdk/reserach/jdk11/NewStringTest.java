@@ -3,6 +3,7 @@ package com.perunit.jdk.reserach.jdk11;
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
@@ -57,5 +58,27 @@ class NewStringTest {
                 "foo",
                 "bar"),
             lines);
+    }
+
+    @Nested
+    class StripTest {
+
+        @Test
+        void testSame() {
+            var s = "\t abc \n";
+
+            assertEquals("abc", s.trim());
+            assertEquals("abc", s.strip());
+        }
+
+        @Test
+        void testDifferent() {
+            var c = '\u2000';
+            var s = c + "abc" + c;
+
+            assertTrue(Character.isWhitespace(c));
+            assertEquals(s, s.trim());
+            assertEquals("abc", s.strip());
+        }
     }
 }

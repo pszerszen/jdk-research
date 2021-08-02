@@ -1,5 +1,6 @@
 package com.perunit.jdk.reserach.jdk11;
 
+import java.util.List;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -40,5 +41,21 @@ class NewStringTest {
         assertTrue(" \n ".isBlank());
 
         assertFalse(STRING.isBlank());
+    }
+
+    @Test
+    void testLines() {
+        var string = "foo\nbar\n\nfoo\nbar";
+
+        var lines = string.lines().toList();
+
+        assertEquals(
+            List.of(
+                "foo",
+                "bar",
+                "",
+                "foo",
+                "bar"),
+            lines);
     }
 }

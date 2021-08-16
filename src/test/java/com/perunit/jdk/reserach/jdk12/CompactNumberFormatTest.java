@@ -1,14 +1,18 @@
 package com.perunit.jdk.reserach.jdk12;
 
-import java.text.CompactNumberFormat;
-import java.text.NumberFormat.Style;
-import java.util.Locale;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
+import java.text.CompactNumberFormat;
+import java.text.NumberFormat.Style;
+import java.util.Locale;
+
+import static java.util.Locale.ENGLISH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class CompactNumberFormatTest {
+
+    private static final Locale POLISH = new Locale("pl", "PL");
 
     @CsvSource({
         "100,100",
@@ -18,7 +22,7 @@ class CompactNumberFormatTest {
     })
     @ParameterizedTest
     void testLongNumberFormatPl(long input, String expected) {
-        var numberFormat = CompactNumberFormat.getCompactNumberInstance(new Locale("pl", "PL"), Style.LONG);
+        var numberFormat = CompactNumberFormat.getCompactNumberInstance(POLISH, Style.LONG);
 
         assertEquals(expected, numberFormat.format(input));
     }
@@ -31,7 +35,7 @@ class CompactNumberFormatTest {
     })
     @ParameterizedTest
     void testShortNumberFormatEn(long input, String expected) {
-        var numberFormat = CompactNumberFormat.getCompactNumberInstance(Locale.ENGLISH, Style.SHORT);
+        var numberFormat = CompactNumberFormat.getCompactNumberInstance(ENGLISH, Style.SHORT);
 
         assertEquals(expected, numberFormat.format(input));
     }

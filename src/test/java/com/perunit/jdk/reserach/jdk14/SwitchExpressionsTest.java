@@ -1,8 +1,9 @@
 package com.perunit.jdk.reserach.jdk14;
 
-import java.time.DayOfWeek;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.EnumSource;
+
+import java.time.DayOfWeek;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 

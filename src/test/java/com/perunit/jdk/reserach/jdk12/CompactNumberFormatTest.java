@@ -1,5 +1,6 @@
 package com.perunit.jdk.reserach.jdk12;
 
+import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.CsvSource;
 
@@ -10,6 +11,7 @@ import java.util.Locale;
 import static java.util.Locale.ENGLISH;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+@Slf4j
 class CompactNumberFormatTest {
 
     private static final Locale POLISH = new Locale("pl", "PL");
@@ -23,8 +25,10 @@ class CompactNumberFormatTest {
     @ParameterizedTest
     void testLongNumberFormatPl(long input, String expected) {
         var numberFormat = CompactNumberFormat.getCompactNumberInstance(POLISH, Style.LONG);
+        var formatted = numberFormat.format(input);
 
-        assertEquals(expected, numberFormat.format(input));
+        log.info("CompactNumberFormat formatted {} to {}", input, formatted);
+        assertEquals(expected, formatted);
     }
 
     @CsvSource({
@@ -36,7 +40,9 @@ class CompactNumberFormatTest {
     @ParameterizedTest
     void testShortNumberFormatEn(long input, String expected) {
         var numberFormat = CompactNumberFormat.getCompactNumberInstance(ENGLISH, Style.SHORT);
+        var formatted = numberFormat.format(input);
 
-        assertEquals(expected, numberFormat.format(input));
+        log.info("CompactNumberFormat formatted {} to {}", input, formatted);
+        assertEquals(expected, formatted);
     }
 }

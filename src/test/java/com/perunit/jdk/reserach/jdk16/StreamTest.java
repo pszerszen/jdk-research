@@ -30,6 +30,11 @@ class StreamTest {
                     .forEach(i -> processor.accept(value)))
             .toList();
         assertEquals(input.size() * multiplier, objects.size());
+        assertEquals(List.of(
+                "123", "123", "123",
+                "abc", "abc", "abc",
+                "!@#", "!@#", "!@#")
+            , objects);
     }
 
 }

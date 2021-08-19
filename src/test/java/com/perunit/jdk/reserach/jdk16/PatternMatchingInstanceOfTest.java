@@ -1,10 +1,11 @@
 package com.perunit.jdk.reserach.jdk16;
 
+import org.junit.jupiter.api.Test;
+
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
@@ -22,8 +23,8 @@ class PatternMatchingInstanceOfTest {
         );
         assertEquals(collectionsAwareToStringOld(map), collectionsAwareToStringNew(map));
 
-        record Point(int x, int y){}
-        var point = new Point(3,4);
+        record Point(int x, int y) {}
+        var point = new Point(3, 4);
         assertEquals(collectionsAwareToStringOld(point), collectionsAwareToStringNew(point));
     }
 

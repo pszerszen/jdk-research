@@ -10,6 +10,7 @@
 
   <properties>
     <java.version>17</java.version>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.source>${java.version}</maven.compiler.source>
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <junit-jupiter.version>5.7.2</junit-jupiter.version>
@@ -52,6 +53,7 @@
           <target>${maven.compiler.target}</target>
           <compilerArgs>--enable-preview</compilerArgs>
         </configuration>
+        <version>3.8.1</version>
       </plugin>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>

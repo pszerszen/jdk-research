@@ -15,7 +15,7 @@
     <maven.compiler.target>${java.version}</maven.compiler.target>
     <junit-jupiter.version>5.9.0</junit-jupiter.version>
     <annotations.version>23.0.0</annotations.version>
-    <slf4j.version>2.0.0</slf4j.version>
+    <slf4j.version>2.0.2</slf4j.version>
   </properties>
 
   <dependencies>

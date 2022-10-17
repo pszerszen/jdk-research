@@ -1,15 +1,14 @@
 package com.perunit.jdk.reserach.jdk12;
 
-import lombok.extern.slf4j.Slf4j;
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.CsvSource;
+import static java.util.Locale.ENGLISH;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.text.CompactNumberFormat;
 import java.text.NumberFormat.Style;
 import java.util.Locale;
-
-import static java.util.Locale.ENGLISH;
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import lombok.extern.slf4j.Slf4j;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.CsvSource;
 
 @Slf4j
 class CompactNumberFormatTest {
@@ -28,7 +27,7 @@ class CompactNumberFormatTest {
         var formatted = numberFormat.format(input);
 
         log.info("CompactNumberFormat formatted {} to {}", input, formatted);
-        assertEquals(expected, formatted);
+        assertThat(formatted).isEqualTo(expected);
     }
 
     @CsvSource({
@@ -43,6 +42,6 @@ class CompactNumberFormatTest {
         var formatted = numberFormat.format(input);
 
         log.info("CompactNumberFormat formatted {} to {}", input, formatted);
-        assertEquals(expected, formatted);
+        assertThat(formatted).isEqualTo(expected);
     }
 }

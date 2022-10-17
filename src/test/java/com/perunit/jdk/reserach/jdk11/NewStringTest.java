@@ -1,5 +1,8 @@
 package com.perunit.jdk.reserach.jdk11;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertTrue;
+
 import java.util.List;
 import java.util.stream.Stream;
 import lombok.extern.slf4j.Slf4j;
@@ -8,10 +11,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
 import org.junit.jupiter.params.provider.Arguments;
 import org.junit.jupiter.params.provider.MethodSource;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @Slf4j
 class NewStringTest {
@@ -32,7 +31,7 @@ class NewStringTest {
         var actual = STRING.repeat(count);
         log.info(actual);
 
-        assertEquals(expected, actual);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
@@ -41,7 +40,7 @@ class NewStringTest {
         assertTrue(" ".isBlank());
         assertTrue(" \n ".isBlank());
 
-        assertFalse(STRING.isBlank());
+        assertThat(STRING).isNotBlank();
     }
 
     @Test
@@ -50,14 +49,12 @@ class NewStringTest {
 
         var lines = string.lines().toList();
 
-        assertEquals(
-            List.of(
-                "foo",
-                "bar",
-                "",
-                "foo",
-                "bar"),
-            lines);
+        assertThat(lines).isEqualTo(List.of(
+            "foo",
+            "bar",
+            "",
+            "foo",
+            "bar"));
     }
 
     @Nested
@@ -67,8 +64,8 @@ class NewStringTest {
         void testSame() {
             var s = "\t abc \n";
 
-            assertEquals("abc", s.trim());
-            assertEquals("abc", s.strip());
+            assertThat(s.trim()).isEqualTo("abc");
+            assertThat(s.strip()).isEqualTo("abc");
         }
 
         @Test
@@ -76,17 +73,17 @@ class NewStringTest {
             var c = '\u2000';
             var s = c + "abc" + c;
 
-            assertTrue(Character.isWhitespace(c));
-            assertEquals(s, s.trim());
-            assertEquals("abc", s.strip());
+            assertThat(Character.isWhitespace(c)).isTrue();
+            assertThat(s.trim()).isEqualTo(s);
+            assertThat(s.strip()).isEqualTo("abc");
         }
 
         @Test
         void testSideStrip() {
             var s = "\t abc \n";
 
-            assertEquals("abc \n", s.stripLeading());
-            assertEquals("\t abc", s.stripTrailing());
+            assertThat(s.stripLeading()).isEqualTo("abc \n");
+            assertThat(s.stripTrailing()).isEqualTo("\t abc");
         }
     }
 }

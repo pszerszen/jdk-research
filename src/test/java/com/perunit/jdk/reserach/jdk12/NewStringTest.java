@@ -1,19 +1,20 @@
 package com.perunit.jdk.reserach.jdk12;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
+import java.util.stream.Stream;
 import org.junit.jupiter.api.Nested;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class NewStringTest {
 
     @Test
     void testTransform() {
         String strResult = "hello".transform(input -> input + " world!");
-        assertEquals("hello world!", strResult);
+        assertThat(strResult).isEqualTo("hello world!");
 
         int numResult = "42".transform(Integer::parseInt);
-        assertEquals(42, numResult);
+        assertThat(numResult).isEqualTo(42);
     }
 
     @Nested
@@ -34,7 +35,7 @@ class NewStringTest {
         @Test
         void testPositiveArgument() {
             var actual = MULTILINE_STRING.indent(3);
-            assertEquals(INDENTED_STRING, actual);
+            assertThat(actual).isEqualTo(INDENTED_STRING);
         }
 
         @Test
@@ -44,10 +45,11 @@ class NewStringTest {
                  a multiline
                  string.
                 """;
-            assertEquals(expected, INDENTED_STRING.indent(-2));
+            assertThat(INDENTED_STRING.indent(-2)).isEqualTo(expected);
 
-            assertEquals(MULTILINE_STRING, INDENTED_STRING.indent(-3));
-            assertEquals(MULTILINE_STRING, INDENTED_STRING.indent(-10));
+            Stream.of(-3, -10).forEach(indent ->
+                                           assertThat(INDENTED_STRING.indent(indent))
+                                               .isEqualTo(MULTILINE_STRING));
         }
     }
 }

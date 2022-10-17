@@ -1,11 +1,11 @@
 package com.perunit.jdk.reserach.jdk16;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.IntStream;
 import org.junit.jupiter.api.Test;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class StreamTest {
 
@@ -16,7 +16,7 @@ class StreamTest {
         var oldStyle = input.stream().collect(Collectors.toList());
         var newStyle = input.stream().toList();
 
-        assertEquals(oldStyle, newStyle);
+        assertThat(newStyle).isEqualTo(oldStyle);
     }
 
     @Test
@@ -26,15 +26,14 @@ class StreamTest {
 
         var objects = input.stream()
             .mapMulti((value, processor) ->
-                IntStream.iterate(0, i -> i < multiplier, i -> i + 1)
-                    .forEach(i -> processor.accept(value)))
+                          IntStream.iterate(0, i -> i < multiplier, i -> i + 1)
+                              .forEach(i -> processor.accept(value)))
             .toList();
-        assertEquals(input.size() * multiplier, objects.size());
-        assertEquals(List.of(
-                "123", "123", "123",
-                "abc", "abc", "abc",
-                "!@#", "!@#", "!@#")
-            , objects);
+        assertThat(objects).hasSize(input.size() * multiplier);
+        assertThat(objects).isEqualTo(List.of(
+            "123", "123", "123",
+            "abc", "abc", "abc",
+            "!@#", "!@#", "!@#"));
     }
 
 }

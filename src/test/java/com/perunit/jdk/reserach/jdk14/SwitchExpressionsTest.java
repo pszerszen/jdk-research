@@ -1,11 +1,10 @@
 package com.perunit.jdk.reserach.jdk14;
 
-import org.junit.jupiter.params.ParameterizedTest;
-import org.junit.jupiter.params.provider.EnumSource;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.time.DayOfWeek;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.EnumSource;
 
 class SwitchExpressionsTest {
 
@@ -51,7 +50,8 @@ class SwitchExpressionsTest {
             case WEDNESDAY -> 9;
         };
 
-        assertEquals(oldStyle, semiOldStyle);
-        assertEquals(semiOldStyle, newStyle);
+        assertThat(newStyle)
+            .isEqualTo(semiOldStyle)
+            .isEqualTo(oldStyle);
     }
 }

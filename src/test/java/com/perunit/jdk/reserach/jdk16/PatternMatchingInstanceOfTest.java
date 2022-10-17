@@ -1,31 +1,32 @@
 package com.perunit.jdk.reserach.jdk16;
 
-import org.junit.jupiter.api.Test;
+import static org.assertj.core.api.Assertions.assertThat;
 
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
+import org.junit.jupiter.api.Test;
 
 class PatternMatchingInstanceOfTest {
 
     @Test
     void testPatternMatching() {
         var list = List.of("abc", "123", "!@#");
-        assertEquals(collectionsAwareToStringOld(list), collectionsAwareToStringNew(list));
+        assertThat(collectionsAwareToStringNew(list))
+            .isEqualTo(collectionsAwareToStringOld(list));
 
         var map = Map.of(
             "k1", "val1",
             "k2", 123,
             "k3", 9.09
-        );
-        assertEquals(collectionsAwareToStringOld(map), collectionsAwareToStringNew(map));
-
+                        );
+        assertThat(collectionsAwareToStringNew(map))
+            .isEqualTo(collectionsAwareToStringOld(map));
         record Point(int x, int y) {}
         var point = new Point(3, 4);
-        assertEquals(collectionsAwareToStringOld(point), collectionsAwareToStringNew(point));
+        assertThat(collectionsAwareToStringNew(point))
+            .isEqualTo(collectionsAwareToStringOld(point));
     }
 
     private String collectionsAwareToStringOld(Object o) {

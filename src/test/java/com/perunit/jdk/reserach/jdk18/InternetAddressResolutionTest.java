@@ -1,6 +1,7 @@
 package com.perunit.jdk.reserach.jdk18;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.net.InetAddress;
 import lombok.SneakyThrows;
@@ -14,7 +15,7 @@ class InternetAddressResolutionTest {
     @Test
     void resolveGoogle() {
         var addresses = InetAddress.getAllByName("www.google.com");
-        assertEquals(2, addresses.length);
+        assertTrue(addresses.length > 0);
 
         for (var address : addresses) {
             assertEquals("www.google.com", address.getHostName());

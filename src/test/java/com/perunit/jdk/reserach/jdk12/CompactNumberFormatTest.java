@@ -13,7 +13,7 @@ import org.junit.jupiter.params.provider.CsvSource;
 @Slf4j
 class CompactNumberFormatTest {
 
-    private static final Locale POLISH = new Locale("pl", "PL");
+    private static final Locale POLISH = Locale.of("pl", "PL");
 
     @CsvSource({
         "100,100",

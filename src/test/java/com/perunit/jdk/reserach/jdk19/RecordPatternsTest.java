@@ -1,96 +1,118 @@
 package com.perunit.jdk.reserach.jdk19;
 
-
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.stream.Stream;
+import lombok.val;
+import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 
 class RecordPatternsTest {
 
-    Object object = new Location("Home", new GPSPoint(1.0, 2.0));
+    private final Object object = new Location("Home", new GPSPoint(1.0, 2.0));
 
     @Test
-    void givenObject_whenTestInstanceOfAndCastIdiom_shouldMatchNewInstanceOf() {
-        // old Code
-        if (object instanceof Location) {
-            Location l = (Location) object;
-            assertThat(l).isInstanceOf(Location.class);
-        }
-        // new code
+    @DisplayName("Test Pattern Matching in old way")
+    void testOldWay() {
+        // old code
         if (object instanceof Location l) {
-            assertThat(l).isInstanceOf(Location.class);
+            assertThat(l)
+                .returns("Home", Location::name)
+                .extracting(Location::gpsPoint)
+                .returns(1.0, GPSPoint::lat)
+                .returns(2.0, GPSPoint::lng);
         }
     }
 
     @Test
-    void givenObject_whenTestDestruct_shouldMatch() {
-        // when
+    @DisplayName("Test Patten Matching on high level")
+    void testHighLevelMatching() {
         if (object instanceof Location(var name, var gpsPoint)) {
-            // then
             assertThat(name).isEqualTo("Home");
-            assertThat(gpsPoint).isInstanceOf(GPSPoint.class);
+            assertThat(gpsPoint)
+                .returns(1.0, GPSPoint::lat)
+                .returns(2.0, GPSPoint::lng);
         }
+    }
 
+    @Test
+    @DisplayName("Test Pattern Matching on low level")
+    void testLowLevelMatching() {
         if (object instanceof Location(var name, GPSPoint(var lat, var lng))) {
+            assertThat(name).isEqualTo("Home");
             assertThat(lat).isEqualTo(1.0);
             assertThat(lng).isEqualTo(2.0);
         }
     }
 
     @Test
-    void givenObjectIsNull_whenTestNullCheck_shouldNotMatch() {
-        Location l = null;
-        if (l instanceof Location location) {
-            assertThat(location).isNotNull();
-        }
-    }
-
-
-    @Test
+    @DisplayName("Test Pattern Matching on super deep level")
     void givenObject_whenTestGenericTypeInstanceOf_shouldMatch() {
-        LocationWrapper<Location> locationWrapper = new LocationWrapper<>(new Location("Home", new GPSPoint(1.0, 2.0)), "Description");
-        if (locationWrapper instanceof LocationWrapper<Location>(var ignored, var description)) {
+        var locationWrapper = new LocationWrapper<>((Location) object, "Description");
+        if (locationWrapper instanceof LocationWrapper<Location>(
+            Location(var name, GPSPoint(var lat, var lng)), var description
+        )) {
+            assertThat(name).isEqualTo("Home");
+            assertThat(lat).isEqualTo(1.0);
+            assertThat(lng).isEqualTo(2.0);
             assertThat(description).isEqualTo("Description");
         }
     }
 
-
-    @Test
-    void givenObject_whenTestSwitchExpressionWithTypePattern_shouldMatch() {
-        String result = switch (object) {
-            case Location l -> l.name();
-            default -> "default";
-        };
-        assertThat(result).isEqualTo("Home");
-        Double result2 = switch (object) {
-            case Location(var name, GPSPoint(var lat, var lng)) -> lat;
-            default -> 0.0;
-        };
-        assertThat(result2).isEqualTo(1.0);
+    private static Stream<Arguments> switchPatternMatching() {
+        var gpsPoint = new GPSPoint(1.0, 2.0);
+        var location = new Location("Home", gpsPoint);
+        var wrapper = new LocationWrapper<>(location, "Description");
+        return Stream.of(
+            Arguments.of(gpsPoint, "1.0"),
+            Arguments.of(location, location.name()),
+            Arguments.of(wrapper, wrapper.description()),
+            Arguments.of(new Dog("Skippy"), "default"));
     }
 
-    @Test
-    void givenObject_whenTestGuardedSwitchExpressionWithTypePattern_shouldMatchAndGuard() {
+    @DisplayName("Test switch pattern matching")
+    @ParameterizedTest(name = "{0} should give {1}")
+    @MethodSource("switchPatternMatching")
+    void testSwitchPatternMatching(Object object, String expected) {
         String result = switch (object) {
-            case Location(var name, var ignored) when name.equals("Home") -> "Test";
-            case Location(var name, var ignored) -> name;
+            case Location l -> l.name();
+            case LocationWrapper<?> w -> w.description();
+            case GPSPoint g -> String.valueOf(g.lat());
             default -> "default";
         };
-        assertThat(result).isEqualTo("Test");
+        assertThat(result).isEqualTo(expected);
+    }
 
-        String otherResult = switch (new Location("Other", new GPSPoint(1.0, 2.0))) {
-            case Location(var name, var ignored) when name.equals("Home") -> "Test";
-            case Location(var name, var ignored) -> name;
-            default -> "default";
-        };
-        assertThat(otherResult).isEqualTo("Other");
+    private static Stream<Arguments> switchPatternMatching2() {
+        var gpsPoint = new GPSPoint(1.0, 2.0);
+        var location = new Location("Home", gpsPoint);
+        var otherLocation = new Location("Other", new GPSPoint(1.0, 2.0));
+        var wrapper = new LocationWrapper<>(location, "Description");
+        var otherWrapper = new LocationWrapper<>(otherLocation, "qwerty");
+        return Stream.of(
+            Arguments.of(gpsPoint, "1.0"),
+            Arguments.of(location, "Test"),
+            Arguments.of(otherLocation, otherLocation.name()),
+            Arguments.of(wrapper, wrapper.t().name()),
+            Arguments.of(otherWrapper, wrapper.description()));
+    }
 
-        Object noLocation = new GPSPoint(1.0, 2.0);
-        String noLocationResult = switch (noLocation) {
-            case Location(var name, var ignored) when name.equals("Home") -> "Test";
+    @DisplayName("Test guarded pattern matching in switch")
+    @ParameterizedTest(name = "{0} should give {1}")
+    @MethodSource({"switchPatternMatching2"})
+    void testGuardedSwitchPatternMatching(Object object, String expected) {
+        val result = switch (object) {
+            case Location(var name, var ignored)
+                when name.equals("Home") -> "Test";
             case Location(var name, var ignored) -> name;
+            case LocationWrapper<?>(Location(var name, GPSPoint(var lat, var lng)), var description)
+                when description.equals("Description") -> name;
+            case LocationWrapper<?>(Location(var name, GPSPoint(var lat, var lng)), var description) -> description;
+            case GPSPoint(var lat, var lon) -> String.valueOf(lat);
             default -> "default";
         };
-        assertThat(noLocationResult).isEqualTo("default");
     }
 }

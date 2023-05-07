@@ -17,7 +17,7 @@ class StructuredConcurrencyTest {
     private static final String ERROR_MESSAGE = "Failed to get the result";
 
     @Test
-    @DisplayName("Test structured concurrency")
+    @DisplayName("Test unstructured concurrency")
     void whenGet_thenCorrect() {
         Future<Shelter> shelter;
         Future<List<Dog>> dogs;

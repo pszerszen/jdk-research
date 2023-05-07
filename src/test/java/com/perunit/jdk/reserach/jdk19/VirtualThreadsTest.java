@@ -1,9 +1,13 @@
 package com.perunit.jdk.reserach.jdk19;
 
 import static java.lang.Thread.sleep;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
 
 import java.time.Duration;
 import java.util.concurrent.Executors;
+import java.util.stream.IntStream;
 import lombok.SneakyThrows;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Test;
@@ -35,6 +39,16 @@ class VirtualThreadsTest {
             boilingWater.get();
             bathTime.get();
         }
+    }
+
+    @Test
+    void testManyVirtualThreads() {
+        var iterations = 10_000;
+        var idleService = spy(new IdleService());
+        try (var executor = Executors.newVirtualThreadPerTaskExecutor()) {
+            IntStream.range(0, iterations).forEach(i -> executor.submit(idleService::doStuff));
+        }
+        verify(idleService, times(iterations)).doStuff();
     }
 
     @SneakyThrows

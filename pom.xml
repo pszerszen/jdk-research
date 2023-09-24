@@ -16,6 +16,16 @@
     <assertj.version>3.24.2</assertj.version>
   </properties>
 
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>net.bytebuddy</groupId>
+        <artifactId>byte-buddy</artifactId>
+        <version>1.14.8</version>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+
   <dependencies>
     <dependency>
       <groupId>org.jetbrains</groupId>
@@ -42,7 +52,7 @@
     <dependency>
       <groupId>org.mockito</groupId>
       <artifactId>mockito-junit-jupiter</artifactId>
-      <version>5.3.1</version>
+      <version>5.5.0</version>
       <scope>test</scope>
     </dependency>
     <dependency>

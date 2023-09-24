@@ -1,16 +1,17 @@
 package com.perunit.jdk.reserach.jdk19;
 
-import static org.assertj.core.api.Assertions.assertThat;
-import static org.assertj.core.api.Assertions.assertThatThrownBy;
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
 
 import java.time.Instant;
 import java.util.List;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.Future;
-import jdk.incubator.concurrent.StructuredTaskScope;
-import org.junit.jupiter.api.DisplayName;
-import org.junit.jupiter.api.Test;
+import java.util.concurrent.StructuredTaskScope;
+
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 
 class StructuredConcurrencyTest {
 
@@ -38,11 +39,11 @@ class StructuredConcurrencyTest {
     void whenThrowingException_thenCorrect() {
         assertThatThrownBy(() -> {
             try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-                Future<Shelter> shelter = scope.fork(this::getShelter);
-                Future<List<Dog>> dogs = scope.fork(this::getDogsWithException);
+                var shelter = scope.fork(this::getShelter);
+                var dogs = scope.fork(this::getDogsWithException);
                 scope.throwIfFailed(e -> new RuntimeException(ERROR_MESSAGE));
                 scope.join();
-                Response response = new Response(shelter.resultNow(), dogs.resultNow());
+                Response response = new Response(shelter.get(), dogs.get());
 
                 assertResponseCorrect(response);
             }
@@ -54,12 +55,12 @@ class StructuredConcurrencyTest {
     void whenSlowTasksReachesDeadline_thenCorrect() {
         assertThatThrownBy(() -> {
             try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-                Future<Shelter> shelter = scope.fork(this::getShelter);
-                Future<List<Dog>> dogs = scope.fork(this::getDogsSlowly);
+                var shelter = scope.fork(this::getShelter);
+                var dogs = scope.fork(this::getDogsSlowly);
                 scope.throwIfFailed(e -> new RuntimeException(ERROR_MESSAGE));
                 scope.join();
                 scope.joinUntil(Instant.now().plusMillis(50));
-                Response response = new Response(shelter.resultNow(), dogs.resultNow());
+                Response response = new Response(shelter.get(), dogs.get());
 
                 assertResponseCorrect(response);
             } catch (InterruptedException e) {
@@ -71,11 +72,11 @@ class StructuredConcurrencyTest {
     @Test
     void whenResultNow_thenCorrect() {
         try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
-            Future<Shelter> shelter = scope.fork(this::getShelter);
-            Future<List<Dog>> dogs = scope.fork(this::getDogs);
+            var shelter = scope.fork(this::getShelter);
+            var dogs = scope.fork(this::getDogs);
             scope.join();
 
-            Response response = new Response(shelter.resultNow(), dogs.resultNow());
+            Response response = new Response(shelter.get(), dogs.get());
 
             assertResponseCorrect(response);
         } catch (InterruptedException e) {

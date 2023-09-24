@@ -1,5 +1,6 @@
 package com.perunit.jdk.reserach.jdk19;
 
+import org.assertj.core.api.ThrowableAssert.ThrowingCallable;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 
@@ -37,23 +38,24 @@ class StructuredConcurrencyTest {
 
     @Test
     void whenThrowingException_thenCorrect() {
-        assertThatThrownBy(() -> {
+        ThrowingCallable callable = () -> {
             try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
                 var shelter = scope.fork(this::getShelter);
                 var dogs = scope.fork(this::getDogsWithException);
-                scope.throwIfFailed(e -> new RuntimeException(ERROR_MESSAGE));
                 scope.join();
+                scope.throwIfFailed(e -> new RuntimeException(ERROR_MESSAGE));
                 Response response = new Response(shelter.get(), dogs.get());
 
                 assertResponseCorrect(response);
             }
-        }).isInstanceOf(RuntimeException.class)
+        };
+        assertThatThrownBy(callable).isInstanceOf(RuntimeException.class)
             .hasMessage(ERROR_MESSAGE);
     }
 
     @Test
     void whenSlowTasksReachesDeadline_thenCorrect() {
-        assertThatThrownBy(() -> {
+        ThrowingCallable callable = () -> {
             try (var scope = new StructuredTaskScope.ShutdownOnFailure()) {
                 var shelter = scope.fork(this::getShelter);
                 var dogs = scope.fork(this::getDogsSlowly);
@@ -66,7 +68,8 @@ class StructuredConcurrencyTest {
             } catch (InterruptedException e) {
                 throw new RuntimeException(e);
             }
-        }).isInstanceOf(IllegalStateException.class);
+        };
+        assertThatThrownBy(callable).isInstanceOf(IllegalStateException.class);
     }
 
     @Test

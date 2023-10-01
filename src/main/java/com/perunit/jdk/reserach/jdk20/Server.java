@@ -1,7 +1,6 @@
 package com.perunit.jdk.reserach.jdk20;
 
 import com.sun.net.httpserver.Request;
-import jdk.incubator.concurrent.ScopedValue;
 
 public record Server(RestAdapter restAdapter) {
 

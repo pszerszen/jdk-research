@@ -109,10 +109,10 @@ class RecordPatternsTest {
             case Location(var name, var ignored)
                     when name.equals("Home") -> "Test";
             case Location(var name, var ignored) -> name;
-            case LocationWrapper<?>(Location(var name, GPSPoint(_, _)), var description)
+            case LocationWrapper<?>(Location(var name, GPSPoint(var lat, var lon)), var description)
                     when description.equals("Description") -> name;
-            case LocationWrapper<?>(Location(_, GPSPoint(_, _)), var description) -> description;
-            case GPSPoint(var lat, _) -> String.valueOf(lat);
+            case LocationWrapper<?>(Location(var name, GPSPoint(var lat, var lon)), var description) -> description;
+            case GPSPoint(var lat, var lon) -> String.valueOf(lat);
             default -> "default";
         };
     }
